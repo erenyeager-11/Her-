@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,198 +7,230 @@
 <title>For You</title>
 
 <style>
-  *{box-sizing:border-box}
-  body{
+  *{
     margin:0;
-    font-family: "Poppins", system-ui, -apple-system, sans-serif;
-    background:#0a0c12;
-    color:#f5f5f5;
+    padding:0;
+    box-sizing:border-box;
+  }
+
+  body{
+    font-family: "Poppins", sans-serif;
+    background: radial-gradient(circle at top , #0d0f18, #05060b);
+    color:white;
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
+    overflow:hidden;
   }
 
-  .container{width:100%;max-width:520px;padding:18px 14px 26px;}
-
-  .card{
-    background:rgba(20,25,40,.8);
-    border-radius:22px;
-    padding:18px 18px 22px;
-    box-shadow:0 15px 40px rgba(0,0,0,.45);
+  .container{
+    text-align:center;
+    width:90%;
+    max-width:700px;
   }
-
-  .center{text-align:center}
 
   button{
-    width:100%;
-    margin-top:18px;
+    padding:12px 28px;
+    border-radius:999px;
     border:none;
-    border-radius:18px;
-    padding:14px 10px;
     font-size:1rem;
-    font-weight:600;
-    background:linear-gradient(135deg,#394565,#1d2235);
+    background:#ff4b6e;
     color:white;
+    cursor:pointer;
+    transition:.3s;
   }
-  button:active{transform:scale(.98)}
 
-  .hidden{display:none}
+  button:hover{
+    transform:scale(1.04);
+    box-shadow:0 10px 25px rgba(255,75,110,.4);
+  }
 
-  .street{
-    width:100%;
-    height:180px;
-    border-radius:18px;
-    margin-bottom:14px;
-    background:radial-gradient(circle at top,#ffd96633 0%,#ffd96605 40%,transparent 65%), 
-               linear-gradient(#0c0f18,#0a0c12);
+  .lamp{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    margin:0 auto 10px;
+    background:radial-gradient(circle,#fff7d1 0%, #ffeaa7 30%, transparent 70%);
+    filter:blur(1px);
+    opacity:0;
+    transition:1s;
+  }
+
+  .show{
+    opacity:1;
+  }
+
+  .page{
+    display:none;
+    animation: fadeIn .8s ease forwards;
+  }
+
+  .page img{
+    width:180px;
+    border-radius:20px;
+    margin:12px auto;
+    box-shadow:0 10px 25px rgba(0,0,0,.4);
+  }
+
+  .text{
+    line-height:1.6;
+    margin-top:8px;
+    opacity:.95;
+  }
+
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .hearts span{
+    position:fixed;
+    bottom:-20px;
+    color:#ff4b6e;
+    font-size:18px;
+    animation: floatUp 6s linear infinite;
+    opacity:.35;
+  }
+
+  @keyframes floatUp{
+    from{transform:translateY(0);}
+    to{transform:translateY(-120vh);}
+  }
+
+  .credits-wrapper{
     position:relative;
+    height:70vh;
+    overflow:hidden;
   }
-  .street::after{
-    content:"";
+
+  .credits{
     position:absolute;
-    left:50%;
-    top:0;
-    transform:translateX(-50%);
-    width:8px;
-    height:110%;
-    background:#222732;
-    border-radius:8px;
-  }
-
-  img{
+    bottom:-100%;
     width:100%;
-    border-radius:16px;
-    margin:14px 0 10px;
-    object-fit:cover;
+    animation: scrollCredits 22s linear forwards;
   }
 
-  p{line-height:1.55;margin:10px 0}
-  .footer-hint{opacity:.65;font-size:.8rem;margin-top:6px}
+  @keyframes scrollCredits{
+    from{bottom:-100%;}
+    to{bottom:105%;}
+  }
+
+  .sig{
+    margin-top:16px;
+    opacity:.85;
+  }
+
 </style>
 </head>
 
 <body>
-<div class="container">
-  <div class="card" id="startPage">
-    <div class="center">
-      <h2>Tap to Open</h2>
-      <div class="street"></div>
-      <p style="opacity:.8">
-        Something gentle, soft and calm only for you 🌙
-      </p>
-      <button onclick="openStory()">OPEN</button>
-    </div>
-  </div>
 
-  <div class="card hidden" id="story">
-    <div id="pageContent"></div>
-    <button id="nextBtn" onclick="nextPage()">Next</button>
-    <div class="footer-hint" id="hint"></div>
-  </div>
+<div class="hearts"></div>
+
+<div class="container" id="content">
+  <button id="openBtn">Open</button>
+  <div class="lamp" id="lamp"></div>
 </div>
 
-<audio id="music" loop></audio>
+<audio id="song1" loop src="song1.mp3"></audio>
+<audio id="song2" src="song2.mp3"></audio>
 
 <script>
-  const music = document.getElementById("music");
+const openBtn = document.getElementById("openBtn");
+const lamp = document.getElementById("lamp");
+const content = document.getElementById("content");
 
-  const pages = [
-    {
-      img:"cat1.jpg",
-      text:`Hey, just wanted to send something calm.  
-      No rush. No pressure. Only peaceful vibes. 🌌`
-    },
-    {
-      img:"cat2.jpg",
-      text:`Some people make the world feel softer,  
-      like evening lights on a quiet street.`
-    },
-    {
-      img:"cat3.jpg",
-      text:`You do not need to be louder.  
-      You already shine in your own gentle way.`
-    },
-    {
-      img:"cat4.jpg",
-      text:`You are allowed to rest.  
-      You are allowed to take your time.`
-    },
-    {
-      img:"cat5.jpg",
-      text:`You are not toxic.  
-      Sometimes you are just protecting your heart.  
+let page = 0;
 
-      You try to look strong, but inside you care so much.  
-      You try to seem happy, but you hold a lot quietly.  
+const pages = [
+  {img:"cat1.jpg", text:`Hey, just something soft for tonight.`},
+  {img:"cat2.jpg", text:`You have a quiet kind of charm. It feels calm.`},
+  {img:"cat3.jpg", text:`You make normal days feel a little lighter and warmer.`},
+  {img:"cat4.jpg", text:`Your smile, your thoughts, even your little chaos feels beautiful.`},
 
-      You are not a red flag.  
-      You are the soft green light that helps people breathe.`
-    },
-    {
-      img:"cat6.jpg",
-      text:`You are not pretending to be perfect, and that is beautiful.  
+  {img:"cat5.jpg", text:`You say you are toxic. But no. You simply protect your heart.  
+You try to look like a red flag. But you are the safest place.  
+Outside you look okay. Inside you hold storms.  
+And still you stay gentle. That is rare.`},
 
-      You are cute in a calm, genuine way.  
-      I do not know your name.  
-      I have never seen your face.  
+  {img:"cat6.jpg", text:`You are not toxic. You are healing.  
+You learned to be strong quietly.  
+You are really cute in your own way.  
+I have never seen you. I do not even know your name.  
+Yet somehow I wish softness for you.  
+And yeah, a little like Mikasa.`},
 
-      But if I say something,  
-      you have that Mikasa kind of strength.`
-    },
-    {
-      img:"cat7.jpg",
-      text:`Thank you for existing.  
-      Stay kind. Stay safe. Stay you.  
+  {credits:true}
+];
 
-      Eren`
-    }
-  ];
+function showPage(){
+  content.innerHTML = "";
 
-  let index = 0;
+  if(page < pages.length-1){
+    const p = document.createElement("div");
+    p.className = "page";
 
-  function playMusicForPage(){
-    if(index <= 3){
-      music.src = "song1.mp3";
-    } else {
-      music.src = "song2.mp3";
-    }
-    music.play().catch(()=>{});
-  }
-
-  function openStory(){
-    document.getElementById("startPage").classList.add("hidden");
-    document.getElementById("story").classList.remove("hidden");
-    playMusicForPage();
-    render();
-  }
-
-  function render(){
-    const data = pages[index];
-    const box = document.getElementById("pageContent");
-    box.innerHTML = `
-      <img src="${data.img}" alt="cat" />
-      <p>${data.text}</p>
+    p.innerHTML = `
+      <img src="${pages[page].img}">
+      <p class="text">${pages[page].text}</p>
+      <br>
+      <button onclick="next()">Next</button>
     `;
-    document.getElementById("hint").innerText =
-      index < pages.length-1 ? `Page ${index+1} / ${pages.length}` : "Last page";
-    document.getElementById("nextBtn").innerText =
-      index < pages.length-1 ? "Next" : "Finish";
+
+    content.appendChild(p);
+
+  } else {
+
+    content.innerHTML = `
+      <div class="credits-wrapper">
+        <div class="credits">
+          <h2>For someone who deserves softer days</h2>
+          <p class="text">
+          I hope life feels lighter for you.  
+          I hope you find peace in small moments.  
+          I hope your heart gets the kindness it gives.  
+          Some feelings do not need to be spoken loudly.  
+          Sometimes they are meant to be understood quietly.
+          </p>
+
+          <h3 class="sig">-EREN</h3>
+          <p class="sig">maybe one day you will read between the lines</p>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function next(){
+  page++;
+
+  if(page === 4){
+    document.getElementById("song1").pause();
+    document.getElementById("song2").play();
+    document.getElementById("song2").loop = true;
   }
 
-  function nextPage(){
-    if(index < pages.length-1){
-      index++;
-      playMusicForPage();
-      render();
-    } else {
-      music.pause();
-      music.currentTime = 0;
-      index = 0;
-      document.getElementById("story").classList.add("hidden");
-      document.getElementById("startPage").classList.remove("hidden");
-    }
-  }
+  showPage();
+}
+
+openBtn.addEventListener("click", ()=>{
+  lamp.classList.add("show");
+  document.getElementById("song1").play();
+
+  setTimeout(()=>{
+    showPage();
+  },900);
+});
+
+setInterval(()=>{
+  const h = document.createElement("span");
+  h.innerHTML = "❤";
+  h.style.left = Math.random()*100 + "%";
+  document.querySelector(".hearts").appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},500);
 </script>
+
 </body>
 </html>
